@@ -1,7 +1,6 @@
 package jointsky.storm.topology;
 
-import jointsky.storm.function.ETLFilter;
-import jointsky.storm.function.resloveFunction;
+import jointsky.storm.function.*;
 import jointsky.util.PropertiesLoader;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
@@ -14,6 +13,8 @@ import org.apache.storm.kafka.trident.TridentKafkaConfig;
 import org.apache.storm.spout.SchemeAsMultiScheme;
 import org.apache.storm.trident.Stream;
 import org.apache.storm.trident.TridentTopology;
+import org.apache.storm.trident.operation.builtin.Count;
+import org.apache.storm.trident.operation.builtin.Sum;
 import org.apache.storm.tuple.Fields;
 
 
@@ -39,9 +40,15 @@ public class AnalysisTopology {
         Stream spoutStream = topology.newStream("kafka-stream" , spout);
 
         //采用ETLFilter对tuple进行过滤
-        Stream filterStream = spoutStream.each(new Fields("str"),new ETLFilter());
+        Stream filterStream = spoutStream.each(new Fields("str"),new ETLFilter())
+                //定位省份
+                .each(new Fields("str"),new PraseData(),new Fields("prasedData"))
+                .each(new Fields("prasedData"),new ProvinceAssign(),new Fields("province"))
+                .each(new Fields("prasedData","province"),new HourAssign(),new Fields("key","value")).project(new Fields("key","value"))
+                //groupBy强制数据按照key重新分片
+                .groupBy(new Fields("key"))
+                .persistentAggregate(new OutBreakTrendFactory(),new Fields("key","value"),new SumByKey(),new Fields("sum")).newValuesStream();
 
-        //Stream parsedStream = spoutStream.each(new Fields("str"),new resloveFunction(),new Fields("updataDate","psCode"));
 
         return topology.build();
     }

@@ -11,13 +11,15 @@ import org.slf4j.LoggerFactory;
  */
 public class ETLFilter extends BaseFilter{
     private static Logger LOG = LoggerFactory.getLogger(ETLFilter.class);
+
     public boolean isKeep(TridentTuple tridentTuple) {
         String[] data = tridentTuple.getValue(0).toString().split(",");
         //判断字段数是否正确,数据是否合法
         if(data.length ==8 && isLegalData(data)) {
-            LOG.debug("Emitting data [" + tridentTuple.getValue(0).toString() +"]");
+            System.out.println("Emitting data [" + tridentTuple.getValue(0).toString() +"]");
             return true;
         } else {
+            System.out.println("drop data [" + tridentTuple.getValue(0).toString() +"]");
             return false;
         }
     }

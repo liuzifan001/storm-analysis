@@ -9,8 +9,8 @@ import java.util.Date;
 public class Test {
     public static void main(String[] args) {
         Date now = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH");
         System.out.println(sdf.format(now));
-        System.out.println(sdf.format(now).substring(0,15) + "0:00");
+       // System.out.println(sdf.format(now).substring(0,15) + "0:00");
     }
 }
