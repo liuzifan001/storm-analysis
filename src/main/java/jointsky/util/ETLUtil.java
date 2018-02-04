@@ -39,4 +39,11 @@ public class ETLUtil {
         return true;
     }
 
+    public static boolean isLegalGasFacTenMinData(String[] data){
+        return data.length ==8 && ETLUtil.TimeFilter(data[0]) && ETLUtil.PsCodeFilter(data[1])
+                && ETLUtil.outputCodeFilter(data[2]) && ETLUtil.pollutantCodeFilter(data[3])
+                && ETLUtil.TimeFilter(data[4]) && ETLUtil.isDouble(data[5])
+                && ETLUtil.isDouble(data[6]) && ETLUtil.isInt(data[7]);
+    }
+
 }
