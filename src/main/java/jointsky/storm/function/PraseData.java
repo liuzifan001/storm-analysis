@@ -1,6 +1,6 @@
 package jointsky.storm.function;
 
-import jointsky.vo.GasTenMinData;
+import jointsky.vo.TenMinData;
 import org.apache.storm.trident.operation.BaseFunction;
 import org.apache.storm.trident.operation.TridentCollector;
 import org.apache.storm.trident.tuple.TridentTuple;
@@ -15,7 +15,7 @@ import java.util.List;
 public class PraseData extends BaseFunction{
     public void execute(TridentTuple tridentTuple, TridentCollector tridentCollector) {
         String[] msg = tridentTuple.getValue(0).toString().split(",");
-        GasTenMinData gtmData = new GasTenMinData(msg);
+        TenMinData gtmData = new TenMinData(msg);
         List<Object> values = new ArrayList<Object>();
         values.add(gtmData);
         tridentCollector.emit(values);

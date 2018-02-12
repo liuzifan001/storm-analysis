@@ -2,7 +2,11 @@ package jointsky.esper;
 
 import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.UpdateListener;
+import jointsky.dao.RuleDao;
+import jointsky.dao.RuleDaoImpl;
+import jointsky.vo.Rule;
 import org.apache.storm.generated.GlobalStreamId;
+import org.apache.storm.shade.org.jboss.netty.util.internal.ConcurrentHashMap;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -19,6 +23,7 @@ import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.UpdateListener;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -222,14 +227,20 @@ public class EsperBolt extends BaseRichBolt implements UpdateListener{
         }
     }
 
+    //Esper blot类所有属性
     private final Map<StreamId, String> inputAliases = new LinkedHashMap<StreamId, String>();
     private final Map<StreamId, TupleTypeDescriptor> tupleTypes = new LinkedHashMap<StreamId, TupleTypeDescriptor>();
     private final Map<String, EventTypeDescriptor> eventTypes = new LinkedHashMap<String, EventTypeDescriptor>();
     private final List<String> statements = new ArrayList<String>();
+    //用来存放epl与statement的映射
+    private final ConcurrentHashMap<String,EPStatement> statementsMap = new ConcurrentHashMap<String, EPStatement>();
+
+    private transient RuleDao ruleDao;
     private transient EPServiceProvider esperSink;
     private transient EPRuntime runtime;
     private transient EPAdministrator admin;
     private transient OutputCollector collector;
+
 
     private EsperBolt()
     {
@@ -302,10 +313,23 @@ public class EsperBolt extends BaseRichBolt implements UpdateListener{
         this.runtime = esperSink.getEPRuntime();
         this.admin = esperSink.getEPAdministrator();
 
+        //从数据库中获取epl并加入statement数组与statementMap之中
+        ruleDao = new RuleDaoImpl();
+        List<Rule> ruleList = new ArrayList<Rule>();
+        try {
+        ruleList = ruleDao.getAllRules();
+        } catch (SQLException e) {
+        e.printStackTrace();
+        }
+        for(Rule rule : ruleList) {
+            addStatement(rule.getEpl());              //将数据库中的所有规则添加epl到statement
+        }
+
+        //对statement中的所有epl创建EPstatement并绑定监听，
         for (String stmt : statements) {
             EPStatement statement = admin.createEPL(stmt);
-
             statement.addListener(this);
+            statementsMap.put(stmt,statement);  //将映射放入statementsMap之中
         }
     }
 
@@ -364,6 +388,26 @@ public class EsperBolt extends BaseRichBolt implements UpdateListener{
 
     public void execute(Tuple tuple)
     {
+        if(tuple.getSourceComponent().equals("ruleSpout")){
+            String action = tuple.getStringByField("action");       //获取操作名称
+            Rule rule = (Rule) tuple.getValueByField("rule");
+            String epl = rule.getEpl();
+            if(action.equals("add")) {
+                if(!statementsMap.containsKey(epl)) {
+                    //若不存在则注册epl
+                    EPStatement statement = admin.createEPL(epl);
+                    statement.addListener(this);
+                    addStatement(epl);
+                    statementsMap.put(epl,statement);
+                }
+            }else if (action.equals("drop")) {
+                if(statementsMap.containsKey(epl)) {
+                    EPStatement statement = statementsMap.get(epl);
+                    statement.destroy();
+                    statementsMap.remove(epl);
+                }
+            }
+        }
         String eventType = getEventTypeName(tuple.getSourceComponent(), tuple.getSourceStreamId());
         Map<String, Object> data = new HashMap<String, Object>();
         Fields fields = tuple.getFields();

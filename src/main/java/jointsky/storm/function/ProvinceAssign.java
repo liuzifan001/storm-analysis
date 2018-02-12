@@ -1,6 +1,6 @@
 package jointsky.storm.function;
 
-import jointsky.vo.GasTenMinData;
+import jointsky.vo.TenMinData;
 import org.apache.storm.trident.operation.BaseFunction;
 import org.apache.storm.trident.operation.TridentCollector;
 import org.apache.storm.trident.tuple.TridentTuple;
@@ -23,7 +23,7 @@ public class ProvinceAssign extends BaseFunction{
     }
     public void execute(TridentTuple tridentTuple, TridentCollector tridentCollector) {
         String province ="NONE";
-        GasTenMinData gtmData = (GasTenMinData) tridentTuple.getValue(0);
+        TenMinData gtmData = (TenMinData) tridentTuple.getValue(0);
 
         province = getProvince(gtmData.getPsCode().substring(0,2));
         List<Object> values = new ArrayList<Object>();

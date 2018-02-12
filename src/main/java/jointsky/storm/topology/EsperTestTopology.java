@@ -5,7 +5,7 @@ import jointsky.storm.blot.EsperOutputBlot;
 import jointsky.storm.blot.OutputBlot;
 import jointsky.storm.blot.ParseDataBlot;
 import jointsky.util.PropertiesLoader;
-import jointsky.vo.GasTenMinData;
+import jointsky.vo.TenMinData;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.generated.StormTopology;
@@ -26,16 +26,16 @@ public class EsperTestTopology {
 
     private static StormTopology buildTopology() {
         //KafkaSpout的创建
+        //String[] arr = {"1","2"};
         BrokerHosts brokerHosts =new ZkHosts(zks);
         SpoutConfig kafkaSpoutConf = new SpoutConfig(brokerHosts,topic,"/" + topic, "esper-test");
         kafkaSpoutConf.scheme = new SchemeAsMultiScheme(new StringScheme());   //MultiScheme用于指定如果处理从kafka中读取到的字节,StringScheme将byte[]转化为String,并指定stream输出一个名为str的Field
-
         //定义EsperBlot
         EsperBolt esperBolt = new EsperBolt.Builder()
-                .inputs()                                       //定义输入流
+                .inputs()                                      //定义输入流
                     .aliasComponent("ParseData")              //定义来自的组件名称
                     .withField("GasFacTenMin")                //定义来自的Field
-                    .ofType(GasTenMinData.class)               //数据类型的Class
+                    .ofType(TenMinData.class)               //数据类型的Class
                     .toEventType("GasFacTenMinEvent")         //转化为的event名称
                 .outputs()
                     .onDefaultStream()

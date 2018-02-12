@@ -8,10 +8,18 @@
     <artifactId>storm-analysis</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+<!--    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.9.RELEASE</version>
+        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;
+    </parent>-->
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>4.1.9.RELEASE</spring.version>
         <common.version>2.4</common.version>
+        <spring.version>4.1.9.RELEASE</spring.version>
+        <java.version>1.8</java.version>
         <kafka.version>0.10.2.1</kafka.version>
     </properties>
 
@@ -84,7 +92,17 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.39</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.5.2</version>
+        </dependency>
+
+<!--        spring boot-->
     </dependencies>
-
-
 </project>

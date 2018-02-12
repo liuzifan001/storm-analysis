@@ -1,16 +1,26 @@
 package jointsky.main;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
+import jointsky.dao.RuleDao;
+import jointsky.dao.RuleDaoImpl;
+import jointsky.vo.Rule;
+
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by LiuZifan on 2018/1/29.
  */
 public class Test {
     public static void main(String[] args) {
-        Date now = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH");
-        System.out.println(sdf.format(now));
-       // System.out.println(sdf.format(now).substring(0,15) + "0:00");
+        RuleDao test = new RuleDaoImpl();
+        try {
+            List<Rule> lsit = test.getAllRules();
+            for (Rule r:lsit) {
+                System.out.println(r.getId() +" : " +r.getEpl());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

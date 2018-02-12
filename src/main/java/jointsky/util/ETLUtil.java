@@ -1,7 +1,5 @@
 package jointsky.util;
 
-import jointsky.vo.GasTenMinData;
-
 import java.text.SimpleDateFormat;
 
 /**
@@ -45,5 +43,7 @@ public class ETLUtil {
                 && ETLUtil.TimeFilter(data[4]) && ETLUtil.isDouble(data[5])
                 && ETLUtil.isDouble(data[6]) && ETLUtil.isInt(data[7]);
     }
+
+
 
 }
