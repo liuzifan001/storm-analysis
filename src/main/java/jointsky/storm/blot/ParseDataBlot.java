@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ParseDataBlot extends BaseBasicBolt{
     private static Logger LOG = LoggerFactory.getLogger(ParseDataBlot.class);
-    private String streamId;
 
     public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector) {
         //获取kafka消息字符串转化为String数组
@@ -27,7 +26,7 @@ public class ParseDataBlot extends BaseBasicBolt{
         String str= tuple.getString(0);
         String[] originalData = str.split(",");
         //过滤非法消息,将合法消息转化为VO类,并发送
-        if(ETLUtil.isLegalGasFacTenMinData(originalData)) {
+        if(ETLUtil.isLegalTenMinData(originalData)) {
           //  LOG.info("[legalData" + str + "]");
             TenMinData gasTenMinData = new TenMinData(originalData);
             basicOutputCollector.emit(new Values(gasTenMinData));
@@ -38,8 +37,8 @@ public class ParseDataBlot extends BaseBasicBolt{
 
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
         //发射blot，Field与输入的StreamId相同
-        //outputFieldsDeclarer.declare(new Fields("GasFacTenMin"));
-        outputFieldsDeclarer.declareStream(streamId,new Fields(streamId));
+        outputFieldsDeclarer.declare(new Fields("GasFacTenMin"));
+        //outputFieldsDeclarer.declareStream(streamId,new Fields(streamId));
     }
 
 

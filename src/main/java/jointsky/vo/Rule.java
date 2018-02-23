@@ -6,7 +6,7 @@ import java.sql.Timestamp;
  * Created by LiuZifan on 2018/2/10.
  */
 public class Rule {
-    private long id;
+    private int id;
     private String type;
     private String epl;
     private String description;
@@ -17,7 +17,7 @@ public class Rule {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

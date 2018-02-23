@@ -2,7 +2,7 @@ package jointsky.main;
 
 
 import jointsky.dao.RuleDao;
-import jointsky.dao.RuleDaoImpl;
+import jointsky.dao.impl.RuleDaoImpl;
 import jointsky.vo.Rule;
 
 import java.sql.SQLException;

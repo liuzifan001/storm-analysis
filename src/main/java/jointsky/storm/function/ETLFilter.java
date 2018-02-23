@@ -26,9 +26,10 @@ public class ETLFilter extends BaseFilter{
 
     //用ETL工具判断数据是否合法
     private boolean isLegalData(String[] data){
-        return ETLUtil.TimeFilter(data[0]) && ETLUtil.PsCodeFilter(data[1])
+        return true;
+        /*ETLUtil.TimeFilter(data[0]) && ETLUtil.PsCodeFilter(data[1])
                 && ETLUtil.outputCodeFilter(data[2]) && ETLUtil.pollutantCodeFilter(data[3])
                 && ETLUtil.TimeFilter(data[4]) && ETLUtil.isDouble(data[5])
-                && ETLUtil.isDouble(data[6]) && ETLUtil.isInt(data[7]);
+                && ETLUtil.isDouble(data[6]) && ETLUtil.isInt(data[7]);*/
     }
 }

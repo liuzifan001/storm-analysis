@@ -44,7 +44,7 @@ public class AnalysisTopology {
                 //定位省份
                 .each(new Fields("str"),new PraseData(),new Fields("prasedData"))
                 .each(new Fields("prasedData"),new ProvinceAssign(),new Fields("province"))
-                .each(new Fields("prasedData","province"),new HourAssign(),new Fields("key","value")).project(new Fields("key","value"))
+                //.each(new Fields("prasedData","province"),new HourAssign(),new Fields("key","value")).project(new Fields("key","value"))
                 //groupBy强制数据按照key重新分片
                 .groupBy(new Fields("key"))
                 .persistentAggregate(new OutBreakTrendFactory(),new Fields("key","value"),new SumByKey(),new Fields("sum")).newValuesStream();

@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 /**
  * Created by LiuZifan on 2018/2/2.
- * esper事件流类型的定义
+ * esper事件输出类型的定义
  */
 public class EventTypeDescriptor implements Serializable {
     private final String name;

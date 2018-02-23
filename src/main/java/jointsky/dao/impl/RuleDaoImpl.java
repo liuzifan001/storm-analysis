@@ -1,5 +1,6 @@
-package jointsky.dao;
+package jointsky.dao.impl;
 
+import jointsky.dao.RuleDao;
 import jointsky.util.ConnectionPool;
 import jointsky.vo.Rule;
 
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * Created by LiuZifan on 2018/2/11.
  */
-public class RuleDaoImpl implements RuleDao{
+public class RuleDaoImpl implements RuleDao {
     public List<Rule> getAllRules() throws SQLException{
         Connection conn = null;
         PreparedStatement ps = null;
@@ -26,7 +27,7 @@ public class RuleDaoImpl implements RuleDao{
             rs = ps.executeQuery();
             while(rs.next()){
                 Rule rule = new Rule();
-                rule.setId(rs.getLong(1));
+                rule.setId(rs.getInt(1));
                 rule.setType(rs.getString(2));
                 rule.setEpl(rs.getString(3));
                 rule.setDescription(rs.getString(4));
